@@ -19,5 +19,12 @@ and populated appropriately.
 You can install the development version of biomassrecovery like so:
 
 ``` r
+#install.packages("pak")
+pak::pkg_install("fortht-mac/biomassrecovery")
+```
+
+Afterwards, to load the package, type:
+
+``` r
 library(biomassrecovery)
 ```

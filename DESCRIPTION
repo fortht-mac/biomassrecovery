@@ -14,7 +14,8 @@ LazyData: true
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    VignetteBuilder: knitr
 Config/testthat/edition: 3
 URL: https://github.com/fortht-mac/biomassrecovery
 BugReports: https://github.com/fortht-mac/biomassrecovery/issues

@@ -1,0 +1,120 @@
+---
+title: "biomassrecovery_vignette"
+output: rmarkdown::html_vignette
+description:
+vignette: >
+  %\VignetteIndexEntry{biomassrecovery_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+_Author: Tessa Forth (GEO-712)_
+
+**This vignette explains how the ```biomassrecovery``` package works. In a nutshell, it reports tropical forest biomass recovery trajectories at the ecoregion scale.**
+
+## Context
+
+This package and repository were created as part of GEOG712: Reproducible Workflow in GitHub and R. The contents and function are adapted from my MSc thesis project, tentatively titled: “Evaluating the variability of tropical forest biomass recovery through a space-for-time synthesis of remote sensing datasets.”
+
+_Note that there are two somewhat unrelated functions: ```multiplyr``` and ```fourthpowerr```. These were created as practice for navigating function-writing and package design. The following information details the "heart" of the package: tropical forest biomass recovery._
+
+## Data Sources/Preprocessing
+
+This package uses a preliminary export file called ```EcoregionExports.csv```. This is a CSV table that has pre-processed some ecoregion-level data on tropical forest biomass recovery rates, regression statistics, and nearby primary forest reference biomass. This data is derived primarily from the following sources:
+
+- RESOLVE Ecoregions ([Dinerstein et al., 2017](https://www.arcgis.com/home/item.html?id=37ea320eebb647c6838c23f72abae5ef#overview)).
+- GEDI L4A Aboveground Biomass Density, Version 2.1 ([Dubayah et al., 2020](https://developers.google.com/earth-engine/datasets/catalog/LARSE_GEDI_GEDI04_A_002?_gl=1\emph{1sanpqq}_up\emph{MQ..}_ga_ga_SM8HXJ53K2*czE3ODk2NzEyMTEkbzEkZzAkdDE3ODk2NzEyMTEkajYwJGwwJGgw)).
+- GLAD Global Forest Change ([Hansen et al., 2013](https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2025_v1_13)).
+- JRC Tropical Moist Forests Annual Change Collection ([Vancutsem et al., 2021](https://forobs.jrc.ec.europa.eu/TMF/data)).
+
+These data were produced through the following steps:
+
+- In Google Earth Engine, 2020 GEDI footprints were sampled within primary forests and post-disturbance/regrowing forests within one ecoregion (excluding areas with anthropogenic influence). 
+  - Code links:
+    - [Primary Forests](https://code.earthengine.google.com/273fa38c7dc60c3177209be042062c8b)
+    - [Global Forest Change](https://code.earthengine.google.com/e347588e7711b4de0272882004d4b8bc)
+    - [Tropical Moist Forests](https://code.earthengine.google.com/84d2db2b969db7ccb15e32307b2c21cc)
+- In Google Colab, data on aboveground biomass were aggregated to the median within primary forests, as well as the median per year of regrowth - then, the relationship between biomass and age was modelled via linear regression and compared to the primary forest benchmark.
+
+These steps resulted in the first-pass table of ecoregion results, ```EcoregionExports.csv```. Yet not all the data is fit for reporting yet, and there remain some critical variables to calculate.
+
+## Package Functionality
+
+This package reads the exported table, omits unnecessary data columns, and filters for records where ecoregion-level results were viable for reporting. It then calculates additional fields for reporting the "best" results.
+
+To start with this package, you first need to set your environment up and read the CSV file.
+
+```{r setup}
+# Setup
+#install.packages("here")
+library(here)
+library(biomassrecovery)
+
+## Set file path
+filepath <- here("data-raw", "EcoregionExports.csv")
+
+## Read CSV file
+df_ecoregions_original <- read.csv(filepath) # Storing this as its own object in Environment for reference
+```
+
+Then, we filter the data, starting by removing unnecessary columns for the Global Forest Change dataset, which will not make it to the final analysis.
+
+```{r filtering_gfcremoval}
+df_ecoregions <- subset(df_ecoregions_original,
+                        select = -c(gfc_n, gfc_slope, gfc_int, gfc_r2))
+```
+
+Next, we want there to be no missing data, no negative growth slope and no excessively small R^2 values.
+
+```{r filtering_cleanup}
+### Remove records where ecoregions had no viable data points within Primary Forests or TMF Regrowing Forests
+df_ecoregions <- df_ecoregions[df_ecoregions$pri_n != -1 & # -1: nodata flag
+                               df_ecoregions$tmf_n != -1,]
+### Ensure that only records with positive, nonzero slopes are kept
+df_ecoregions <- df_ecoregions[df_ecoregions$tmf_slope > 0,]
+### Remove ecoregions where R^2 was particularly low, less than 0.3
+df_ecoregions <- df_ecoregions[df_ecoregions$tmf_r2 >= 0.3,]
+```
+
+Then, we calculate new fields for comparing the biomass recovery trajectories to the benchmark of primary, old-growth forest levels of biomass.
+
+```{r newreports}
+## Calculate the predicted biomass after 20 years of regrowth (via linear regression)
+df_ecoregions$tmf_agbd20 <- df_ecoregions$tmf_slope * 20 + df_ecoregions$tmf_int
+
+## Calculate the percent of Primary Forest biomass that the 20-year prediction reaches
+df_ecoregions$tmf_pct20 <- (df_ecoregions$tmf_agbd20 / df_ecoregions$pri_median) * 100
+
+## Calculate the estimated time it would take to reach Primary Forest biomass, assuming continual linear regrowth
+df_ecoregions$tmf_timetopri <- (df_ecoregions$pri_median - df_ecoregions$tmf_int) / df_ecoregions$tmf_slope
+```
+
+Lastly, we sort & save to report!
+```{r sortandsave}
+df_ecoregions <- df_ecoregions[order(df_ecoregions$tmf_timetopri),]
+EcoregionReports <- df_ecoregions
+usethis::use_data(EcoregionReports, overwrite = TRUE)
+```
+
+## The Output
+
+The output is a data frame with 26 rows and 11 variables:
+
+- **ECO_ID:** Unique numeric ID for each ecoregion, per the RESOLVE Ecoregions dataset
+- **ECO_NAME:** Descriptive geographic name for each ecoregion
+- **pri_n:** Count of points sampled within primary forests
+- **pri_median:** Median aboveground biomass measured within primary forests, Mg/ha
+- **tmf_n** Count of points sampled within regrowing forests, via the Tropical Moist Forests (TMF) dataset
+- **tmf_slope:** Slope/growth rate of median aboveground biomass per regrowth age, via TMF regrowth years, Mg/ha/yr
+- **tmf_int:** Intercept of the linear regression equation of median aboveground biomass per TMF age, Mg/ha
+- **tmf_r2:** R^2 coefficient of determination from the linear regression equation of biomass/age
+- **tmf_agbd20:** Predicted aboveground biomass after 20 years of regrowth, via the regression model, Mg/ha
+- **tmf_pct20:** Percent that the 20-year biomass reaches compared to primary forest biomass, %
+- **tmf_timetopri:** Estimated time needed for biomass to reach primary forest levels under linear regrowth, years

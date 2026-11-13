@@ -1,8 +1,9 @@
 ---
-title: "biomassrecovery-vignette"
+title: "Vignette_For_Reporting_Biomass_Recovery"
 output: rmarkdown::html_vignette
+description:
 vignette: >
-  %\VignetteIndexEntry{biomassrecovery-vignette}
+  %\VignetteIndexEntry{Vignette_For_Reporting_Biomass_Recovery}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,6 +14,18 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+This vignette [PURPOSE]
+
+# Context
+
+The code processes a file called ```EcoregionExports.csv``` - a table of biomass and forest regrowth age data for different tropical forest ecoregions. These data were produced through the following steps:
+
+- In Google Earth Engine, 
+- In Google Colab,
+
+The table structure consists of 1 row for each ecoregion, and several columns showing median biomass values within primary forests, as well as linear regression outputs from plotting biomass against forest age, from two different datasets: Global Forest Change ([Hansen et al., 2013](https://developers.google.com/earth-engine/datasets/catalog/UMD_hansen_global_forest_change_2025_v1_13
+)) and Tropical Moist Forests ([Vancutsem et al., 2021](https://forobs.jrc.ec.europa.eu/TMF/data)).
 
 ```{r setup}
 library(here)

@@ -1,5 +1,5 @@
 ---
-title: "biomassrecovery_vignette"
+title: “biomassrecovery_vignette”
 output: rmarkdown::html_vignette
 description:
 vignette: >
@@ -23,7 +23,7 @@ _Author: Tessa Forth (GEO-712)_
 
 This package and repository were created as part of GEOG712: Reproducible Workflow in GitHub and R. The contents and function are adapted from my MSc thesis project, tentatively titled: “Evaluating the variability of tropical forest biomass recovery through a space-for-time synthesis of remote sensing datasets.”
 
-_Note that there are two somewhat unrelated functions: ```multiplyr``` and ```fourthpowerr```. These were created as practice for navigating function-writing and package design. The following information details the "heart" of the package: tropical forest biomass recovery._
+_Note that there are two somewhat unrelated functions: ```multiplyr``` and ```fourthpowerr```. These were created as practice for navigating function-writing and package design. The following information details the “heart” of the package: tropical forest biomass recovery._
 
 ## Data Sources/Preprocessing
 
@@ -36,7 +36,7 @@ This package uses a preliminary export file called ```EcoregionExports.csv```. T
 
 These data were produced through the following steps:
 
-- In Google Earth Engine, 2020 GEDI footprints were sampled within primary forests and post-disturbance/regrowing forests within one ecoregion (excluding areas with anthropogenic influence). 
+- In Google Earth Engine, 2020 GEDI footprints were sampled within primary forests and post-disturbance/regrowing forests within one ecoregion (excluding areas with anthropogenic influence).
   - Code links:
     - [Primary Forests](https://code.earthengine.google.com/273fa38c7dc60c3177209be042062c8b)
     - [Global Forest Change](https://code.earthengine.google.com/e347588e7711b4de0272882004d4b8bc)
@@ -47,13 +47,13 @@ These steps resulted in the first-pass table of ecoregion results, ```EcoregionE
 
 ## Package Functionality
 
-This package reads the exported table, omits unnecessary data columns, and filters for records where ecoregion-level results were viable for reporting. It then calculates additional fields for reporting the "best" results.
+This package reads the exported table, omits unnecessary data columns, and filters for records where ecoregion-level results were viable for reporting. It then calculates additional fields for reporting the “best” results.
 
 To start with this package, you first need to set your environment up and read the CSV file.
 
 ```{r setup}
 # Setup
-#install.packages("here")
+#install.packages(“here”)
 library(here)
 library(biomassrecovery)
 

@@ -1,0 +1,44 @@
+---
+title: "packr-vignette"
+output: rmarkdown::html_vignette
+abstract: An important element of reproducible research is documenting all steps of the process, including data analysis. This vignette, developed for the `packr` package (a minimal example of package building), will show how to document data analysis in a self-contained and reproducible document. To this end, the data set `energy_and_emissions` (included in the `packr` package) will be used.
+keywords: R packages; reproducible research; data analysis
+vignette: >
+  %\VignetteIndexEntry{packr-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+This vignette illustrate the use of the dataset and utility functions included in the package `packr`. I collected this data set initially to use in my course GEOG 3LT3: Transportation Geography. As part of this course, students examine some trends in transportation, including the use of energy and emissions. The objective of the practice is two-fold:
+
+1. On the side of technology, the students are learning to work with R Notebooks and R. For this reason, all code is documented so that the students can see _how_ things are done.
+
+2. On the side of transportation geography, the students are learning to discern trends in transportation.
+
+## Preliminaries
+
+Load the packages used in this vignette:
+```{r setup}
+library(biomassrecovery)
+```
+
+## Loading the data
+
+To load the data, use the function `data()`:
+```{r load-data}
+data("EcoregionReports")
+```
+
+To inspect the dataframe, use the function `summary()`
+```{r summary-data}
+summary(EcoregionReports)
+```

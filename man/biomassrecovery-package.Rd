@@ -2,17 +2,19 @@
 % Please edit documentation in R/biomassrecovery-package.R
 \docType{package}
 \name{biomassrecovery-package}
+\alias{biomassrecovery}
 \alias{biomassrecovery-package}
 \title{biomassrecovery: Report Tropical Forest Biomass Recovery Trajectories at the Ecoregion Scale}
 \description{
 The package reads a table of unfiltered data for tropical forest ecoregions' biomass in primary forests and linear regression parameters measured across different ages of forests regrowing from stand-replacing disturbance. It filters the dataset to the most relevant and viable records, then calculates additional reporting fields that depict timelines and progress of biomass recovery.
-
-This package is an exercise in package creation using
-R studio. The package includes some sample functions and
-a sample dataset with their respective documentation.
 }
-\references{
-\url{https://github.com/fortht-mac/biomassrecovery}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/fortht-mac/biomassrecovery}
+  \item Report bugs at \url{https://github.com/fortht-mac/biomassrecovery/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Tessa Forth \email{fortht@mcmaster.ca}
@@ -22,12 +24,5 @@ Authors:
   \item Tessa Forth \email{fortht@mcmaster.ca}
 }
 
-
-Tessa Forth, School of Earth, Environment and Society, McMaster University \email{fortht@mcmaster.ca}
 }
-\keyword{chronosequence,}
-\keyword{ecoregion,}
 \keyword{internal}
-\keyword{package,}
-\keyword{space-for-time,}
-\keyword{tropical}

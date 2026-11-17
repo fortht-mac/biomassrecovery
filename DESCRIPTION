@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Tessa", "Forth", , "fortht@mcmaster.ca", role = c("aut", "cre"))
 Description: The package reads a table of unfiltered data for tropical forest ecoregions' biomass in primary forests and linear regression parameters measured across different ages of forests regrowing from stand-replacing disturbance. It filters the dataset to the most relevant and viable records, then calculates additional reporting fields that depict timelines and progress of biomass recovery.
-License: CC BY 4.0
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Config/roxygen2/version: 8.1.1
@@ -14,11 +14,8 @@ LazyData: true
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    VignetteBuilder: knitr
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://github.com/fortht-mac/biomassrecovery
 BugReports: https://github.com/fortht-mac/biomassrecovery/issues
 VignetteBuilder: knitr
-Imports: 
-    here
